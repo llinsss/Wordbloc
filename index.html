@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Fun - Kids Spelling Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="screen active">
+            <h1 class="title">🎮 Word Fun!</h1>
+            <p class="subtitle">Learn to Spell</p>
+            <div class="categories">
+                <button class="category-btn" data-category="animals">
+                    <span class="emoji">🐶</span>
+                    <span>Animals</span>
+                </button>
+                <button class="category-btn" data-category="fruits">
+                    <span class="emoji">🍎</span>
+                    <span>Fruits</span>
+                </button>
+                <button class="category-btn" data-category="colors">
+                    <span class="emoji">🎨</span>
+                    <span>Colors</span>
+                </button>
+                <button class="category-btn" data-category="objects">
+                    <span class="emoji">⚽</span>
+                    <span>Objects</span>
+                </button>
+            </div>
+            <div class="stats">
+                <div class="stat">⭐ Stars: <span id="totalStars">0</span></div>
+                <div class="stat">🏆 Level: <span id="playerLevel">1</span></div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="game-header">
+                <button id="backBtn" class="icon-btn">🏠</button>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div class="stars-display">⭐ <span id="currentStars">0</span></div>
+            </div>
+
+            <div class="game-content">
+                <div class="word-display">
+                    <div id="wordImage" class="word-image"></div>
+                    <button id="playSound" class="sound-btn">🔊 Hear Word</button>
+                </div>
+
+                <div id="dropZone" class="drop-zone"></div>
+                
+                <div id="letterBank" class="letter-bank"></div>
+
+                <div id="feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="screen">
+            <div class="victory-content">
+                <h2 class="victory-title">🎉 Amazing!</h2>
+                <div class="victory-stars" id="victoryStars"></div>
+                <p class="victory-text">You earned <span id="earnedStars">0</span> stars!</p>
+                <div class="victory-buttons">
+                    <button id="nextLevelBtn" class="big-btn">Next Word ➡️</button>
+                    <button id="homeBtn" class="big-btn secondary">Home 🏠</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <button id="settingsBtn" class="settings-btn">⚙️</button>
+        <div id="settingsPanel" class="settings-panel">
+            <h3>Settings</h3>
+            <label>
+                Volume: <input type="range" id="volumeControl" min="0" max="100" value="70">
+            </label>
+            <button id="closeSettings" class="big-btn">Close</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
