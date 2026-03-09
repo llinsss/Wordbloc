@@ -435,6 +435,16 @@ body {
     margin-top: 10px;
 }
 
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    color: rgba(0,0,0,0.5);
+    z-index: 50;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     body {
