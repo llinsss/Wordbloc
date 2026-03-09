@@ -538,7 +538,7 @@ body {
 
 @media (max-width: 480px) {
     .screen {
-        padding: 15px;
+        padding: 10px;
     }
     
     .title {
@@ -548,17 +548,17 @@ body {
     
     .subtitle {
         font-size: 1rem;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
     
     .categories {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 10px;
         max-width: 100%;
     }
     
     .category-btn {
-        padding: 20px;
+        padding: 15px;
         font-size: 1rem;
     }
     
@@ -567,79 +567,91 @@ body {
     }
     
     .stats {
-        font-size: 1rem;
+        font-size: 0.9rem;
         gap: 15px;
     }
     
     .game-header {
-        gap: 10px;
-        margin-bottom: 15px;
+        gap: 8px;
+        margin-bottom: 10px;
     }
     
     .icon-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-    }
-    
-    .progress-bar {
-        height: 25px;
-    }
-    
-    .stars-display {
+        width: 40px;
+        height: 40px;
         font-size: 1.2rem;
     }
     
-    .word-image {
-        width: 140px;
-        height: 140px;
-        font-size: 5rem;
-        margin-bottom: 15px;
+    .progress-bar {
+        height: 20px;
     }
     
-    .sound-btn {
-        padding: 10px 20px;
+    .stars-display {
         font-size: 1rem;
     }
     
+    .word-image {
+        width: 100px;
+        height: 100px;
+        font-size: 4rem;
+        margin-bottom: 10px;
+    }
+    
+    .sound-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
     .letter-slot, .letter-tile {
-        width: 45px;
-        height: 55px;
-        font-size: 1.5rem;
-    }
-    
-    .drop-zone {
-        gap: 6px;
-        padding: 8px;
-        min-height: 70px;
-    }
-    
-    .letter-bank {
-        gap: 6px;
-        padding: 10px;
-    }
-    
-    .feedback {
+        width: 40px;
+        height: 50px;
         font-size: 1.3rem;
     }
     
+    .drop-zone {
+        gap: 5px;
+        padding: 8px;
+        min-height: 60px;
+        margin-bottom: 10px;
+    }
+    
+    .action-buttons {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .action-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .letter-bank {
+        gap: 5px;
+        padding: 8px;
+    }
+    
+    .feedback {
+        font-size: 1.1rem;
+        min-height: 40px;
+    }
+    
     .victory-title {
-        font-size: 2rem;
-        margin-bottom: 20px;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
     }
     
     .victory-stars {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
     .victory-text {
-        font-size: 1.1rem;
-        margin-bottom: 30px;
+        font-size: 1rem;
+        margin-bottom: 20px;
     }
     
     .big-btn {
-        padding: 15px 30px;
-        font-size: 1.1rem;
+        padding: 12px 25px;
+        font-size: 1rem;
     }
     
     .settings-panel {
@@ -648,11 +660,16 @@ body {
     }
     
     .settings-panel h3 {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
     
     .settings-panel label {
-        font-size: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .footer {
+        font-size: 0.8rem;
+        bottom: 5px;
     }
 }
 
