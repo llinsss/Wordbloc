@@ -8,7 +8,9 @@ const wordData = {
         { word: 'frog', emoji: '🐸' },
         { word: 'bear', emoji: '🐻' },
         { word: 'lion', emoji: '🦁' },
-        { word: 'duck', emoji: '🦆' }
+        { word: 'duck', emoji: '🦆' },
+        { word: 'cow', emoji: '🐮' },
+        { word: 'pig', emoji: '🐷' }
     ],
     fruits: [
         { word: 'apple', emoji: '🍎' },
@@ -18,7 +20,9 @@ const wordData = {
         { word: 'melon', emoji: '🍉' },
         { word: 'berry', emoji: '🫐' },
         { word: 'mango', emoji: '🥭' },
-        { word: 'pear', emoji: '🍐' }
+        { word: 'pear', emoji: '🍐' },
+        { word: 'plum', emoji: '🍑' },
+        { word: 'kiwi', emoji: '🥝' }
     ],
     colors: [
         { word: 'red', emoji: '🔴' },
@@ -28,7 +32,9 @@ const wordData = {
         { word: 'pink', emoji: '🩷' },
         { word: 'orange', emoji: '🟠' },
         { word: 'purple', emoji: '🟣' },
-        { word: 'brown', emoji: '🟤' }
+        { word: 'brown', emoji: '🟤' },
+        { word: 'black', emoji: '⚫' },
+        { word: 'white', emoji: '⚪' }
     ],
     objects: [
         { word: 'ball', emoji: '⚽' },
@@ -38,7 +44,29 @@ const wordData = {
         { word: 'house', emoji: '🏠' },
         { word: 'tree', emoji: '🌳' },
         { word: 'sun', emoji: '☀️' },
-        { word: 'moon', emoji: '🌙' }
+        { word: 'moon', emoji: '🌙' },
+        { word: 'car', emoji: '🚗' },
+        { word: 'bike', emoji: '🚲' }
+    ],
+    food: [
+        { word: 'pizza', emoji: '🍕' },
+        { word: 'cake', emoji: '🍰' },
+        { word: 'bread', emoji: '🍞' },
+        { word: 'egg', emoji: '🥚' },
+        { word: 'milk', emoji: '🥛' },
+        { word: 'rice', emoji: '🍚' },
+        { word: 'soup', emoji: '🍲' },
+        { word: 'taco', emoji: '🌮' }
+    ],
+    nature: [
+        { word: 'leaf', emoji: '🍃' },
+        { word: 'rose', emoji: '🌹' },
+        { word: 'cloud', emoji: '☁️' },
+        { word: 'rain', emoji: '🌧️' },
+        { word: 'snow', emoji: '❄️' },
+        { word: 'fire', emoji: '🔥' },
+        { word: 'water', emoji: '💧' },
+        { word: 'wind', emoji: '💨' }
     ]
 };
 
