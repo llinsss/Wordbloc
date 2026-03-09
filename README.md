@@ -1,4 +1,4 @@
-# Word Fun - Kids Spelling Game 🎮
+# SpellBloc - Kids Word Game 🎮
 
 A simple, engaging word game app for kids aged 4-7 that teaches spelling and pronunciation of basic words.
 

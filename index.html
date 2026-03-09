@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Fun - Kids Spelling Game</title>
+    <title>SpellBloc - Kids Word Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="app">
         <!-- Home Screen -->
         <div id="homeScreen" class="screen active">
-            <h1 class="title">🎮 Word Fun!</h1>
+            <h1 class="title">🎮 SpellBloc!</h1>
             <p class="subtitle">Learn to Spell</p>
             <div class="categories">
                 <button class="category-btn" data-category="animals">
@@ -54,6 +54,11 @@
 
                 <div id="dropZone" class="drop-zone"></div>
                 
+                <div class="action-buttons">
+                    <button id="deleteBtn" class="action-btn">⌫ Delete</button>
+                    <button id="clearBtn" class="action-btn">✖ Clear</button>
+                </div>
+                
                 <div id="letterBank" class="letter-bank"></div>
 
                 <div id="feedback" class="feedback"></div>
@@ -63,11 +68,11 @@
         <!-- Victory Screen -->
         <div id="victoryScreen" class="screen">
             <div class="victory-content">
-                <h2 class="victory-title">🎉 Amazing!</h2>
+                <h2 class="victory-title">🎉 Round Complete!</h2>
                 <div class="victory-stars" id="victoryStars"></div>
-                <p class="victory-text">You earned <span id="earnedStars">0</span> stars!</p>
+                <p class="victory-text">You earned <span id="earnedStars">0</span> stars this round!</p>
                 <div class="victory-buttons">
-                    <button id="nextLevelBtn" class="big-btn">Next Word ➡️</button>
+                    <button id="nextLevelBtn" class="big-btn">Play Again 🔁</button>
                     <button id="homeBtn" class="big-btn secondary">Home 🏠</button>
                 </div>
             </div>

@@ -47,8 +47,8 @@ let currentCategory = '';
 let currentWordIndex = 0;
 let currentWord = '';
 let userAnswer = [];
-let totalStars = parseInt(localStorage.getItem('totalStars')) || 0;
-let playerLevel = parseInt(localStorage.getItem('playerLevel')) || 1;
+let totalStars = parseInt(localStorage.getItem('spellbloc_totalStars')) || 0;
+let playerLevel = parseInt(localStorage.getItem('spellbloc_playerLevel')) || 1;
 let volume = 0.7;
 
 // DOM Elements
@@ -87,6 +87,10 @@ function setupEventListeners() {
     document.getElementById('homeBtn').addEventListener('click', () => showScreen('home'));
     document.getElementById('nextLevelBtn').addEventListener('click', nextWord);
     document.getElementById('playSound').addEventListener('click', () => speakWord(currentWord));
+
+    // Delete and Clear buttons
+    document.getElementById('deleteBtn').addEventListener('click', deleteLast);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
 
     // Settings
     document.getElementById('settingsBtn').addEventListener('click', () => {
@@ -196,7 +200,7 @@ function handleLetterClick(tile) {
 }
 
 function removeLetterFromSlot(slot, slotIndex) {
-    if (userAnswer.length === currentWord.length) return; // Don't allow removal during checking
+    if (userAnswer.length === currentWord.length) return;
 
     const tileId = slot.dataset.tileId;
     const tile = letterBank.querySelector(`[data-id="${tileId}"]`);
@@ -205,10 +209,8 @@ function removeLetterFromSlot(slot, slotIndex) {
         tile.classList.remove('used');
     }
 
-    // Remove from userAnswer and shift remaining
     userAnswer.splice(slotIndex, 1);
     
-    // Rebuild drop zone
     Array.from(dropZone.children).forEach((s, i) => {
         if (i < userAnswer.length) {
             s.textContent = userAnswer[i].letter.toUpperCase();
@@ -220,6 +222,44 @@ function removeLetterFromSlot(slot, slotIndex) {
             delete s.dataset.tileId;
         }
     });
+}
+
+function deleteLast() {
+    if (userAnswer.length === 0) return;
+    
+    const lastAnswer = userAnswer[userAnswer.length - 1];
+    const tile = letterBank.querySelector(`[data-id="${lastAnswer.tileId}"]`);
+    
+    if (tile) {
+        tile.classList.remove('used');
+    }
+    
+    userAnswer.pop();
+    
+    const lastSlot = dropZone.children[userAnswer.length];
+    lastSlot.textContent = '';
+    lastSlot.classList.remove('filled');
+    delete lastSlot.dataset.tileId;
+    
+    playSound('pop');
+}
+
+function clearAll() {
+    if (userAnswer.length === 0) return;
+    
+    userAnswer = [];
+    
+    Array.from(dropZone.children).forEach(slot => {
+        slot.textContent = '';
+        slot.classList.remove('filled');
+        delete slot.dataset.tileId;
+    });
+    
+    Array.from(letterBank.children).forEach(tile => {
+        tile.classList.remove('used');
+    });
+    
+    playSound('pop');
 }
 
 function checkAnswer() {
@@ -254,10 +294,21 @@ function handleCorrectAnswer() {
     wordImage.classList.add('celebrate');
     setTimeout(() => wordImage.classList.remove('celebrate'), 500);
     
-    // Show victory screen
-    setTimeout(() => {
-        showVictoryScreen(starsEarned);
-    }, 1500);
+    // Auto-advance to next word or show round complete
+    currentWordIndex++;
+    const words = wordData[currentCategory];
+    
+    if (currentWordIndex >= words.length) {
+        // Round complete - show victory screen
+        setTimeout(() => {
+            showVictoryScreen(starsEarned);
+        }, 1500);
+    } else {
+        // Continue to next word
+        setTimeout(() => {
+            loadWord();
+        }, 1500);
+    }
 }
 
 function handleIncorrectAnswer() {
@@ -281,13 +332,14 @@ function handleIncorrectAnswer() {
 }
 
 function showVictoryScreen(stars) {
-    document.getElementById('earnedStars').textContent = stars;
-    document.getElementById('victoryStars').textContent = '⭐'.repeat(stars);
+    const totalRoundStars = wordData[currentCategory].length * 3;
+    document.getElementById('earnedStars').textContent = totalRoundStars;
+    document.getElementById('victoryStars').textContent = '⭐'.repeat(Math.min(totalRoundStars / 3, 5));
     showScreen('victory');
 }
 
 function nextWord() {
-    currentWordIndex++;
+    currentWordIndex = 0;
     showScreen('game');
     loadWord();
 }
@@ -298,8 +350,8 @@ function updateStats() {
 }
 
 function saveProgress() {
-    localStorage.setItem('totalStars', totalStars);
-    localStorage.setItem('playerLevel', playerLevel);
+    localStorage.setItem('spellbloc_totalStars', totalStars);
+    localStorage.setItem('spellbloc_playerLevel', playerLevel);
     updateStats();
 }
 

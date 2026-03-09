@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', cursive, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #4a5568;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -42,14 +42,14 @@ body {
 
 /* Home Screen */
 #homeScreen {
-    background: linear-gradient(180deg, #ffeaa7 0%, #74b9ff 100%);
+    background: #fef3c7;
     align-items: center;
     justify-content: center;
 }
 
 .title {
     font-size: 3rem;
-    color: #ff6b6b;
+    color: #dc2626;
     text-shadow: 3px 3px 0 #fff, 6px 6px 0 #333;
     margin-bottom: 10px;
     animation: bounce 1s infinite;
@@ -62,7 +62,7 @@ body {
 
 .subtitle {
     font-size: 1.5rem;
-    color: #4834d4;
+    color: #1e40af;
     margin-bottom: 40px;
 }
 
@@ -76,7 +76,7 @@ body {
 }
 
 .category-btn {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: #3b82f6;
     border: 4px solid white;
     border-radius: 20px;
     padding: 30px;
@@ -115,7 +115,7 @@ body {
 
 /* Game Screen */
 #gameScreen {
-    background: linear-gradient(180deg, #a8edea 0%, #fed6e3 100%);
+    background: #dbeafe;
 }
 
 .game-header {
@@ -126,7 +126,7 @@ body {
 }
 
 .icon-btn {
-    background: #ff6b6b;
+    background: #ef4444;
     border: none;
     border-radius: 50%;
     width: 50px;
@@ -153,7 +153,7 @@ body {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+    background: #10b981;
     transition: width 0.5s;
     width: 0%;
 }
@@ -191,7 +191,7 @@ body {
 }
 
 .sound-btn {
-    background: #00b894;
+    background: #8b5cf6;
     color: white;
     border: none;
     border-radius: 15px;
@@ -218,7 +218,7 @@ body {
     background: rgba(255,255,255,0.5);
     border-radius: 15px;
     border: 3px dashed #333;
-    margin: 20px 0;
+    margin-bottom: 15px;
 }
 
 .letter-slot {
@@ -237,8 +237,33 @@ body {
 }
 
 .letter-slot.filled {
-    background: #55efc4;
+    background: #86efac;
     transform: scale(1.1);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    background: #ef4444;
+    color: white;
+    border: 3px solid #333;
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.action-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
 }
 
 .letter-bank {
@@ -252,7 +277,7 @@ body {
 .letter-tile {
     width: 60px;
     height: 70px;
-    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+    background: #fbbf24;
     border: 3px solid #333;
     border-radius: 10px;
     display: flex;
@@ -295,16 +320,16 @@ body {
 }
 
 .feedback.correct {
-    color: #00b894;
+    color: #059669;
 }
 
 .feedback.incorrect {
-    color: #ff6b6b;
+    color: #dc2626;
 }
 
 /* Victory Screen */
 #victoryScreen {
-    background: linear-gradient(135deg, #ffeaa7 0%, #74b9ff 100%);
+    background: #fef3c7;
     align-items: center;
     justify-content: center;
 }
@@ -315,7 +340,7 @@ body {
 
 .victory-title {
     font-size: 3rem;
-    color: #ff6b6b;
+    color: #dc2626;
     margin-bottom: 30px;
     animation: bounce 1s infinite;
 }
@@ -338,7 +363,7 @@ body {
 }
 
 .big-btn {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: #3b82f6;
     color: white;
     border: 4px solid white;
     border-radius: 15px;
@@ -356,8 +381,8 @@ body {
 }
 
 .big-btn.secondary {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    color: #333;
+    background: #94a3b8;
+    color: white;
 }
 
 /* Settings */
