@@ -339,6 +339,11 @@ function showVictoryScreen(stars) {
 }
 
 function nextWord() {
+    const categories = Object.keys(wordData);
+    const currentIndex = categories.indexOf(currentCategory);
+    const nextIndex = (currentIndex + 1) % categories.length;
+    
+    currentCategory = categories[nextIndex];
     currentWordIndex = 0;
     showScreen('game');
     loadWord();
