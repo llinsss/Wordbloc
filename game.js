@@ -1,74 +1,268 @@
-// Game Data
-const wordData = {
-    animals: [
-        { word: 'cat', emoji: '🐱' },
-        { word: 'dog', emoji: '🐶' },
-        { word: 'fish', emoji: '🐠' },
-        { word: 'bird', emoji: '🐦' },
-        { word: 'frog', emoji: '🐸' },
-        { word: 'bear', emoji: '🐻' },
-        { word: 'lion', emoji: '🦁' },
-        { word: 'duck', emoji: '🦆' },
-        { word: 'cow', emoji: '🐮' },
-        { word: 'pig', emoji: '🐷' }
-    ],
-    fruits: [
-        { word: 'apple', emoji: '🍎' },
-        { word: 'grape', emoji: '🍇' },
-        { word: 'lemon', emoji: '🍋' },
-        { word: 'peach', emoji: '🍑' },
-        { word: 'melon', emoji: '🍉' },
-        { word: 'berry', emoji: '🫐' },
-        { word: 'mango', emoji: '🥭' },
-        { word: 'pear', emoji: '🍐' },
-        { word: 'plum', emoji: '🍑' },
-        { word: 'kiwi', emoji: '🥝' }
-    ],
-    colors: [
-        { word: 'red', emoji: '🔴' },
-        { word: 'blue', emoji: '🔵' },
-        { word: 'green', emoji: '🟢' },
-        { word: 'yellow', emoji: '🟡' },
-        { word: 'pink', emoji: '🩷' },
-        { word: 'orange', emoji: '🟠' },
-        { word: 'purple', emoji: '🟣' },
-        { word: 'brown', emoji: '🟤' },
-        { word: 'black', emoji: '⚫' },
-        { word: 'white', emoji: '⚪' }
-    ],
-    objects: [
-        { word: 'ball', emoji: '⚽' },
-        { word: 'book', emoji: '📚' },
-        { word: 'star', emoji: '⭐' },
-        { word: 'heart', emoji: '❤️' },
-        { word: 'house', emoji: '🏠' },
-        { word: 'tree', emoji: '🌳' },
-        { word: 'sun', emoji: '☀️' },
-        { word: 'moon', emoji: '🌙' },
-        { word: 'car', emoji: '🚗' },
-        { word: 'bike', emoji: '🚲' }
-    ],
-    food: [
-        { word: 'pizza', emoji: '🍕' },
-        { word: 'cake', emoji: '🍰' },
-        { word: 'bread', emoji: '🍞' },
-        { word: 'egg', emoji: '🥚' },
-        { word: 'milk', emoji: '🥛' },
-        { word: 'rice', emoji: '🍚' },
-        { word: 'soup', emoji: '🍲' },
-        { word: 'taco', emoji: '🌮' }
-    ],
-    nature: [
-        { word: 'leaf', emoji: '🍃' },
-        { word: 'rose', emoji: '🌹' },
-        { word: 'cloud', emoji: '☁️' },
-        { word: 'rain', emoji: '🌧️' },
-        { word: 'snow', emoji: '❄️' },
-        { word: 'fire', emoji: '🔥' },
-        { word: 'water', emoji: '💧' },
-        { word: 'wind', emoji: '💨' }
-    ]
+// Age-Based Learning Curriculum
+const curriculum = {
+    age2: {
+        name: "First Letters",
+        description: "Learn letter shapes and sounds",
+        categories: {
+            vowels: [
+                { word: 'a', emoji: '🅰️', sound: 'ah' },
+                { word: 'e', emoji: '🇪', sound: 'eh' },
+                { word: 'i', emoji: '🇮', sound: 'ih' },
+                { word: 'o', emoji: '🅾️', sound: 'oh' },
+                { word: 'u', emoji: '🇺', sound: 'uh' }
+            ],
+            vowel_words: [
+                { word: 'at', emoji: '📍', sound: 'at' },
+                { word: 'it', emoji: '👆', sound: 'it' },
+                { word: 'up', emoji: '⬆️', sound: 'up' },
+                { word: 'on', emoji: '🔛', sound: 'on' },
+                { word: 'in', emoji: '📥', sound: 'in' },
+                { word: 'am', emoji: '👋', sound: 'am' },
+                { word: 'an', emoji: '🅰️', sound: 'an' },
+                { word: 'as', emoji: '↗️', sound: 'as' },
+                { word: 'if', emoji: '❓', sound: 'if' },
+                { word: 'is', emoji: '✅', sound: 'is' },
+                { word: 'us', emoji: '👥', sound: 'us' },
+                { word: 'or', emoji: '🔀', sound: 'or' }
+            ]
+        }
+    },
+    age3: {
+        name: "Letter Sounds",
+        description: "Master all letter sounds",
+        categories: {
+            vowels: [
+                { word: 'a', emoji: '🅰️', sound: 'ah' },
+                { word: 'e', emoji: '🇪', sound: 'eh' },
+                { word: 'i', emoji: '🇮', sound: 'ih' },
+                { word: 'o', emoji: '🅾️', sound: 'oh' },
+                { word: 'u', emoji: '🇺', sound: 'uh' }
+            ],
+            vowel_words: [
+                { word: 'at', emoji: '📍', sound: 'at' },
+                { word: 'it', emoji: '👆', sound: 'it' },
+                { word: 'up', emoji: '⬆️', sound: 'up' },
+                { word: 'on', emoji: '🔛', sound: 'on' },
+                { word: 'in', emoji: '📥', sound: 'in' },
+                { word: 'am', emoji: '👋', sound: 'am' },
+                { word: 'an', emoji: '🅰️', sound: 'an' },
+                { word: 'as', emoji: '↗️', sound: 'as' },
+                { word: 'if', emoji: '❓', sound: 'if' },
+                { word: 'is', emoji: '✅', sound: 'is' },
+                { word: 'us', emoji: '👥', sound: 'us' },
+                { word: 'or', emoji: '🔀', sound: 'or' },
+                { word: 'ox', emoji: '🐂', sound: 'ox' },
+                { word: 'ax', emoji: '🪓', sound: 'ax' },
+                { word: 'of', emoji: '🔄', sound: 'of' },
+                { word: 'oh', emoji: '😮', sound: 'oh' }
+            ],
+            consonants: [
+                { word: 'b', emoji: '🅱️', sound: 'buh' },
+                { word: 'c', emoji: '🇨', sound: 'kuh' },
+                { word: 'd', emoji: '🇩', sound: 'duh' },
+                { word: 'm', emoji: '🇲', sound: 'muh' },
+                { word: 'p', emoji: '🅿️', sound: 'puh' },
+                { word: 't', emoji: '🇹', sound: 'tuh' }
+            ],
+            consonant_words: [
+                { word: 'we', emoji: '👥', sound: 'we' },
+                { word: 'me', emoji: '👤', sound: 'me' },
+                { word: 'to', emoji: '➡️', sound: 'to' },
+                { word: 'do', emoji: '✅', sound: 'do' },
+                { word: 'go', emoji: '🏃', sound: 'go' },
+                { word: 'my', emoji: '👆', sound: 'my' },
+                { word: 'by', emoji: '📍', sound: 'by' },
+                { word: 'no', emoji: '❌', sound: 'no' }
+            ]
+        }
+    },
+    age4: {
+        name: "First Words",
+        description: "Simple 3-letter words",
+        categories: {
+            vowels: [
+                { word: 'a', emoji: '🅰️', sound: 'ah' },
+                { word: 'e', emoji: '🇪', sound: 'eh' },
+                { word: 'i', emoji: '🇮', sound: 'ih' },
+                { word: 'o', emoji: '🅾️', sound: 'oh' },
+                { word: 'u', emoji: '🇺', sound: 'uh' }
+            ],
+            consonants: [
+                { word: 'b', emoji: '🅱️', sound: 'buh' },
+                { word: 'c', emoji: '🇨', sound: 'kuh' },
+                { word: 'd', emoji: '🇩', sound: 'duh' },
+                { word: 'm', emoji: '🇲', sound: 'muh' },
+                { word: 'p', emoji: '🅿️', sound: 'puh' },
+                { word: 't', emoji: '🇹', sound: 'tuh' }
+            ],
+            animals: [
+                { word: 'cat', emoji: '🐱' },
+                { word: 'dog', emoji: '🐶' },
+                { word: 'pig', emoji: '🐷' },
+                { word: 'cow', emoji: '🐮' },
+                { word: 'bee', emoji: '🐝' },
+                { word: 'fox', emoji: '🦊' }
+            ],
+            colors: [
+                { word: 'red', emoji: '🔴' },
+                { word: 'blue', emoji: '🔵' },
+                { word: 'pink', emoji: '🩷' },
+                { word: 'green', emoji: '🟢' }
+            ]
+        }
+    },
+    age5: {
+        name: "Word Builder",
+        description: "4-letter words and blends",
+        categories: {
+            vowels: [
+                { word: 'a', emoji: '🅰️', sound: 'ah' },
+                { word: 'e', emoji: '🇪', sound: 'eh' },
+                { word: 'i', emoji: '🇮', sound: 'ih' },
+                { word: 'o', emoji: '🅾️', sound: 'oh' },
+                { word: 'u', emoji: '🇺', sound: 'uh' }
+            ],
+            consonants: [
+                { word: 'b', emoji: '🅱️', sound: 'buh' },
+                { word: 'c', emoji: '🇨', sound: 'kuh' },
+                { word: 'd', emoji: '🇩', sound: 'duh' },
+                { word: 'm', emoji: '🇲', sound: 'muh' },
+                { word: 'p', emoji: '🅿️', sound: 'puh' },
+                { word: 't', emoji: '🇹', sound: 'tuh' }
+            ],
+            animals: [
+                { word: 'bird', emoji: '🐦' },
+                { word: 'fish', emoji: '🐠' },
+                { word: 'frog', emoji: '🐸' },
+                { word: 'bear', emoji: '🐻' },
+                { word: 'duck', emoji: '🦆' },
+                { word: 'lion', emoji: '🦁' }
+            ],
+            colors: [
+                { word: 'red', emoji: '🔴' },
+                { word: 'blue', emoji: '🔵' },
+                { word: 'pink', emoji: '🩷' },
+                { word: 'green', emoji: '🟢' }
+            ],
+            fruits: [
+                { word: 'plum', emoji: '🟣' },
+                { word: 'pear', emoji: '🍐' },
+                { word: 'lime', emoji: '🟢' },
+                { word: 'kiwi', emoji: '🥝' }
+            ]
+        }
+    },
+    age6: {
+        name: "Spelling Master",
+        description: "5-letter words and complex sounds",
+        categories: {
+            vowels: [
+                { word: 'a', emoji: '🅰️', sound: 'ah' },
+                { word: 'e', emoji: '🇪', sound: 'eh' },
+                { word: 'i', emoji: '🇮', sound: 'ih' },
+                { word: 'o', emoji: '🅾️', sound: 'oh' },
+                { word: 'u', emoji: '🇺', sound: 'uh' }
+            ],
+            consonants: [
+                { word: 'b', emoji: '🅱️', sound: 'buh' },
+                { word: 'c', emoji: '🇨', sound: 'kuh' },
+                { word: 'd', emoji: '🇩', sound: 'duh' },
+                { word: 'm', emoji: '🇲', sound: 'muh' },
+                { word: 'p', emoji: '🅿️', sound: 'puh' },
+                { word: 't', emoji: '🇹', sound: 'tuh' }
+            ],
+            animals: [
+                { word: 'tiger', emoji: '🐅' },
+                { word: 'horse', emoji: '🐴' },
+                { word: 'sheep', emoji: '🐑' },
+                { word: 'whale', emoji: '🐋' },
+                { word: 'snake', emoji: '🐍' },
+                { word: 'mouse', emoji: '🐭' }
+            ],
+            colors: [
+                { word: 'yellow', emoji: '🟡' },
+                { word: 'orange', emoji: '🟠' },
+                { word: 'purple', emoji: '🟣' },
+                { word: 'brown', emoji: '🟤' },
+                { word: 'black', emoji: '⚫' },
+                { word: 'white', emoji: '⚪' }
+            ],
+            fruits: [
+                { word: 'apple', emoji: '🍎' },
+                { word: 'grape', emoji: '🍇' },
+                { word: 'lemon', emoji: '🍋' },
+                { word: 'peach', emoji: '🍑' },
+                { word: 'melon', emoji: '🍉' },
+                { word: 'mango', emoji: '🥭' }
+            ],
+            objects: [
+                { word: 'chair', emoji: '🪑' },
+                { word: 'table', emoji: '🪑' },
+                { word: 'phone', emoji: '📱' },
+                { word: 'clock', emoji: '🕐' },
+                { word: 'brush', emoji: '🖌️' },
+                { word: 'spoon', emoji: '🥄' }
+            ]
+        }
+    },
+    age7: {
+        name: "Reading Ready",
+        description: "Complex words and reading prep",
+        categories: {
+            vowels: [
+                { word: 'a', emoji: '🅰️', sound: 'ah' },
+                { word: 'e', emoji: '🇪', sound: 'eh' },
+                { word: 'i', emoji: '🇮', sound: 'ih' },
+                { word: 'o', emoji: '🅾️', sound: 'oh' },
+                { word: 'u', emoji: '🇺', sound: 'uh' }
+            ],
+            consonants: [
+                { word: 'b', emoji: '🅱️', sound: 'buh' },
+                { word: 'c', emoji: '🇨', sound: 'kuh' },
+                { word: 'd', emoji: '🇩', sound: 'duh' },
+                { word: 'm', emoji: '🇲', sound: 'muh' },
+                { word: 'p', emoji: '🅿️', sound: 'puh' },
+                { word: 't', emoji: '🇹', sound: 'tuh' }
+            ],
+            animals: [
+                { word: 'elephant', emoji: '🐘' },
+                { word: 'giraffe', emoji: '🦒' },
+                { word: 'penguin', emoji: '🐧' },
+                { word: 'dolphin', emoji: '🐬' },
+                { word: 'butterfly', emoji: '🦋' },
+                { word: 'rabbit', emoji: '🐰' }
+            ],
+            colors: [
+                { word: 'yellow', emoji: '🟡' },
+                { word: 'orange', emoji: '🟠' },
+                { word: 'purple', emoji: '🟣' },
+                { word: 'brown', emoji: '🟤' },
+                { word: 'black', emoji: '⚫' },
+                { word: 'white', emoji: '⚪' }
+            ],
+            fruits: [
+                { word: 'strawberry', emoji: '🍓' },
+                { word: 'pineapple', emoji: '🍍' },
+                { word: 'watermelon', emoji: '🍉' },
+                { word: 'blueberry', emoji: '🫐' },
+                { word: 'coconut', emoji: '🥥' },
+                { word: 'banana', emoji: '🍌' }
+            ],
+            objects: [
+                { word: 'computer', emoji: '💻' },
+                { word: 'bicycle', emoji: '🚲' },
+                { word: 'umbrella', emoji: '☂️' },
+                { word: 'sandwich', emoji: '🥪' },
+                { word: 'backpack', emoji: '🎒' },
+                { word: 'airplane', emoji: '✈️' }
+            ]
+        }
+    }
 };
+
+// Get current age-appropriate curriculum
+let currentAge = parseInt(localStorage.getItem('spellbloc_age')) || 2;
+let wordData = curriculum[`age${currentAge}`].categories;
 
 // Game State
 let currentCategory = '';
@@ -97,24 +291,58 @@ const volumeControl = document.getElementById('volumeControl');
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     updateStats();
+    updateAgeDisplay();
     setupEventListeners();
 });
 
-function setupEventListeners() {
-    // Category selection
-    document.querySelectorAll('.category-btn').forEach(btn => {
+function updateAgeDisplay() {
+    const ageData = curriculum[`age${currentAge}`];
+    document.getElementById('ageTitle').textContent = `${ageData.name} (Age ${currentAge})`;
+    document.getElementById('ageSelect').value = currentAge;
+    
+    // Update categories
+    const container = document.getElementById('categoriesContainer');
+    container.innerHTML = '';
+    
+    Object.keys(wordData).forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = 'category-btn';
+        btn.dataset.category = category;
+        btn.innerHTML = `
+            <span class="emoji">${wordData[category][0].emoji}</span>
+            <span>${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+        `;
         btn.addEventListener('click', () => {
-            currentCategory = btn.dataset.category;
+            currentCategory = category;
             currentWordIndex = 0;
             startGame();
         });
+        container.appendChild(btn);
+    });
+}
+
+function setupEventListeners() {
+    // Age selection
+    document.getElementById('ageSelect').addEventListener('change', (e) => {
+        currentAge = parseInt(e.target.value);
+        localStorage.setItem('spellbloc_age', currentAge);
+        wordData = curriculum[`age${currentAge}`].categories;
+        updateAgeDisplay();
     });
 
     // Navigation
     document.getElementById('backBtn').addEventListener('click', () => showScreen('home'));
     document.getElementById('homeBtn').addEventListener('click', () => showScreen('home'));
     document.getElementById('nextLevelBtn').addEventListener('click', nextWord);
-    document.getElementById('playSound').addEventListener('click', () => speakWord(currentWord));
+    document.getElementById('playSound').addEventListener('click', () => {
+        const words = wordData[currentCategory];
+        const wordObj = words[currentWordIndex];
+        if (currentCategory === 'vowels' || currentCategory === 'consonants') {
+            speakLetterSound(wordObj);
+        } else {
+            speakWord(currentWord);
+        }
+    });
 
     // Delete and Clear buttons
     document.getElementById('deleteBtn').addEventListener('click', deleteLast);
@@ -179,8 +407,14 @@ function loadWord() {
     // Create scrambled letters
     createLetterBank();
 
-    // Auto-play word
-    setTimeout(() => speakWord(currentWord), 500);
+    // Auto-play word or letter sound
+    if (currentCategory === 'vowels' || currentCategory === 'consonants') {
+        setTimeout(() => speakLetterSound(wordObj), 500);
+    } else if (currentCategory === 'vowel_words' || currentCategory === 'consonant_words') {
+        setTimeout(() => speakWord(currentWord), 500);
+    } else {
+        setTimeout(() => speakWord(currentWord), 500);
+    }
 }
 
 function createLetterBank() {
@@ -392,10 +626,22 @@ function saveProgress() {
 function speakWord(word) {
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(word);
-        utterance.rate = 0.8;
-        utterance.pitch = 1.2;
+        utterance.rate = 0.6;
+        utterance.pitch = 1.4;
         utterance.volume = volume;
         speechSynthesis.speak(utterance);
+    }
+}
+
+function speakLetterSound(wordObj) {
+    if (wordObj.sound && 'speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(wordObj.sound);
+        utterance.rate = 0.5;
+        utterance.pitch = 1.5;
+        utterance.volume = volume;
+        speechSynthesis.speak(utterance);
+    } else {
+        speakWord(wordObj.word);
     }
 }
 

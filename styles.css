@@ -112,11 +112,33 @@ body {
 }
 
 .stats {
-    display: flex;
-    gap: 30px;
     font-size: 1.3rem;
     color: #2d3436;
     font-weight: bold;
+}
+
+.age-selector {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.age-selector label {
+    display: block;
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.age-selector select {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border: 3px solid #333;
+    border-radius: 10px;
+    background: white;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 /* Game Screen */

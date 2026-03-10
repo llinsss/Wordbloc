@@ -11,33 +11,25 @@
         <!-- Home Screen -->
         <div id="homeScreen" class="screen active">
             <h1 class="title">🎮 SpellBloc!</h1>
-            <p class="subtitle">Learn to Spell</p>
-            <div class="categories">
-                <button class="category-btn" data-category="animals">
-                    <span class="emoji">🐶</span>
-                    <span>Animals</span>
-                </button>
-                <button class="category-btn" data-category="fruits">
-                    <span class="emoji">🍎</span>
-                    <span>Fruits</span>
-                </button>
-                <button class="category-btn" data-category="colors">
-                    <span class="emoji">🎨</span>
-                    <span>Colors</span>
-                </button>
-                <button class="category-btn" data-category="objects">
-                    <span class="emoji">⚽</span>
-                    <span>Objects</span>
-                </button>
-                <button class="category-btn" data-category="food">
-                    <span class="emoji">🍕</span>
-                    <span>Food</span>
-                </button>
-                <button class="category-btn" data-category="nature">
-                    <span class="emoji">🍃</span>
-                    <span>Nature</span>
-                </button>
+            <p class="subtitle" id="ageTitle">First Letters (Age 2)</p>
+            
+            <!-- Age Selection -->
+            <div class="age-selector">
+                <label>Child's Age:</label>
+                <select id="ageSelect">
+                    <option value="2">Age 2 - First Letters</option>
+                    <option value="3">Age 3 - Letter Sounds</option>
+                    <option value="4">Age 4 - First Words</option>
+                    <option value="5">Age 5 - Word Builder</option>
+                    <option value="6">Age 6 - Spelling Master</option>
+                    <option value="7">Age 7 - Reading Ready</option>
+                </select>
             </div>
+            
+            <div class="categories" id="categoriesContainer">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
+            
             <div class="stats">
                 <div class="stat">⭐ Stars: <span id="totalStars">0</span></div>
                 <div class="stat">🏆 Level: <span id="playerLevel">1</span></div>
@@ -80,7 +72,7 @@
                 <div class="victory-stars" id="victoryStars"></div>
                 <p class="victory-text">You earned <span id="earnedStars">0</span> stars this round!</p>
                 <div class="victory-buttons">
-                    <button id="nextLevelBtn" class="big-btn">Next Game ➡️</button>
+                    <button id="nextLevelBtn" class="big-btn">Next Stage ➡️</button>
                     <button id="homeBtn" class="big-btn secondary">Home 🏠</button>
                 </div>
             </div>
