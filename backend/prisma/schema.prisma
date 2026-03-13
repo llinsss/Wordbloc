@@ -1,0 +1,364 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  name                  String
+  passwordHash          String?   // nullable for OAuth users
+  role                  Role      @default(PARENT)
+  googleId              String?   @unique
+  emailVerified         Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  lastLogin             DateTime?
+  subscriptionType      SubscriptionType @default(FREE)
+  subscriptionExpiresAt DateTime?
+  privacyConsent        Boolean   @default(false)
+  marketingConsent      Boolean   @default(false)
+
+  // Relations
+  children              Child[]
+  wallet                Wallet?
+  classrooms            Classroom[]
+  wordLists             WordList[]
+
+  @@map("users")
+}
+
+model Child {
+  id                    String    @id @default(cuid())
+  parentId              String
+  name                  String
+  age                   Int
+  avatar                String?
+  gradeLevel            String?
+  languagePreference    String    @default("en")
+  accessibilitySettings Json      @default("{}")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  isActive              Boolean   @default(true)
+  totalPlaytime         Int       @default(0) // in minutes
+  currentLevel          Int       @default(1)
+  totalStars            Int       @default(0)
+
+  // Relations
+  parent                User      @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  wallet                Wallet?
+  gameSessions          GameSession[]
+  wordMastery           WordMastery[]
+  achievements          Achievement[]
+  certificates          Certificate[]
+  leaderboards          Leaderboard[]
+  classroomStudents     ClassroomStudent[]
+  learningAnalytics     LearningAnalytics[]
+
+  @@map("children")
+}
+
+model Wallet {
+  id                    String    @id @default(cuid())
+  userId                String?   @unique
+  childId               String?   @unique
+  walletAddress         String    @unique
+  encryptedPrivateKey   String
+  chain                 String    @default("celo")
+  createdAt             DateTime  @default(now())
+  isActive              Boolean   @default(true)
+  nonce                 Int       @default(0)
+
+  // Relations
+  user                  User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  child                 Child?    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model GameSession {
+  id                    String    @id @default(cuid())
+  childId               String
+  category              String
+  difficultyLevel       Float     @default(1.0)
+  wordsAttempted        Int       @default(0)
+  wordsCorrect          Int       @default(0)
+  wordsWrong            Int       @default(0)
+  score                 Int       @default(0)
+  starsEarned           Int       @default(0)
+  sessionDuration       Int?      // in seconds
+  startedAt             DateTime  @default(now())
+  completedAt           DateTime?
+  gameMode              String    @default("classic")
+  language              String    @default("en")
+  deviceType            String?
+  sessionData           Json      @default("{}")
+
+  // Relations
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@map("game_sessions")
+}
+
+model WordMastery {
+  id                    String    @id @default(cuid())
+  childId               String
+  word                  String
+  category              String
+  masteryLevel          Int       @default(0)
+  attempts              Int       @default(0)
+  correctAttempts       Int       @default(0)
+  firstSeen             DateTime  @default(now())
+  lastSeen              DateTime  @default(now())
+  nextReview            DateTime?
+  difficultyRating      Float     @default(1.0)
+
+  // Relations
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([childId, word])
+  @@map("word_mastery")
+}
+
+model AchievementType {
+  id                    String    @id @default(cuid())
+  name                  String    @unique
+  description           String
+  category              String
+  requirementType       String
+  requirementValue      Int
+  badgeImageUrl         String?
+  nftMetadataUri        String?
+  rarity                Rarity    @default(COMMON)
+  isActive              Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+
+  // Relations
+  achievements          Achievement[]
+
+  @@map("achievement_types")
+}
+
+model Achievement {
+  id                    String    @id @default(cuid())
+  childId               String
+  achievementTypeId     String
+  earnedAt              DateTime  @default(now())
+  nftMinted             Boolean   @default(false)
+  nftTokenId            BigInt?
+  nftTransactionHash    String?
+  blockchainVerified    Boolean   @default(false)
+  metadataUri           String?
+
+  // Relations
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+  achievementType       AchievementType @relation(fields: [achievementTypeId], references: [id])
+
+  @@unique([childId, achievementTypeId])
+  @@map("achievements")
+}
+
+model Certificate {
+  id                    String    @id @default(cuid())
+  childId               String
+  certificateType       String
+  level                 String
+  title                 String
+  description           String?
+  skillsDemonstrated    String[]
+  wordsMastered         Int       @default(0)
+  accuracyPercentage    Float?
+  issuedAt              DateTime  @default(now())
+  certificateHash       String    @unique
+  blockchainHash        String?
+  ipfsHash              String?
+  pdfUrl                String?
+  isVerified            Boolean   @default(false)
+  verificationDate      DateTime?
+
+  // Relations
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@map("certificates")
+}
+
+model Leaderboard {
+  id                    String    @id @default(cuid())
+  childId               String
+  leaderboardType       String
+  period                String
+  score                 Int
+  rank                  Int
+  wordsMastered         Int       @default(0)
+  accuracyPercentage    Float?
+  totalPlaytime         Int       @default(0)
+  periodStart           DateTime
+  periodEnd             DateTime
+  lastUpdated           DateTime  @default(now())
+  blockchainVerified    Boolean   @default(false)
+
+  // Relations
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([childId, leaderboardType, period, periodStart])
+  @@map("leaderboards")
+}
+
+model Classroom {
+  id                    String    @id @default(cuid())
+  teacherId             String
+  name                  String
+  description           String?
+  gradeLevel            String?
+  subject               String    @default("spelling")
+  classCode             String    @unique
+  maxStudents           Int       @default(30)
+  isActive              Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  schoolName            String?
+  schoolDistrict        String?
+
+  // Relations
+  teacher               User      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  students              ClassroomStudent[]
+  wordLists             WordList[]
+
+  @@map("classrooms")
+}
+
+model ClassroomStudent {
+  id                    String    @id @default(cuid())
+  classroomId           String
+  childId               String
+  joinedAt              DateTime  @default(now())
+  isActive              Boolean   @default(true)
+
+  // Relations
+  classroom             Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([classroomId, childId])
+  @@map("classroom_students")
+}
+
+model WordList {
+  id                    String    @id @default(cuid())
+  creatorId             String
+  classroomId           String?
+  name                  String
+  description           String?
+  category              String
+  difficultyLevel       Int       @default(1)
+  words                 Json
+  isPublic              Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  usageCount            Int       @default(0)
+
+  // Relations
+  creator               User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  classroom             Classroom? @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+
+  @@map("word_lists")
+}
+
+model LearningAnalytics {
+  id                    String    @id @default(cuid())
+  childId               String
+  metricType            String
+  metricValue           Float
+  measurementDate       DateTime
+  ageAtMeasurement      Int
+  contextData           Json      @default("{}")
+  createdAt             DateTime  @default(now())
+
+  // Relations
+  child                 Child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([childId, metricType, measurementDate])
+  @@map("learning_analytics")
+}
+
+model BlockchainTransaction {
+  id                    String    @id @default(cuid())
+  transactionHash       String    @unique
+  transactionType       String
+  fromAddress           String
+  toAddress             String?
+  contractAddress       String
+  tokenId               BigInt?
+  gasUsed               BigInt?
+  gasPrice              BigInt?
+  blockNumber           BigInt?
+  blockTimestamp        DateTime?
+  status                TransactionStatus @default(PENDING)
+  errorMessage          String?
+  relatedEntityType     String?
+  relatedEntityId       String?
+  createdAt             DateTime  @default(now())
+
+  @@map("blockchain_transactions")
+}
+
+model IpfsContent {
+  id                    String    @id @default(cuid())
+  ipfsHash              String    @unique
+  contentType           String
+  fileSize              BigInt?
+  mimeType              String?
+  originalFilename      String?
+  relatedEntityType     String?
+  relatedEntityId       String?
+  pinned                Boolean   @default(false)
+  pinService            String    @default("pinata")
+  createdAt             DateTime  @default(now())
+  accessedAt            DateTime  @default(now())
+
+  @@map("ipfs_content")
+}
+
+model SystemConfig {
+  id                    String    @id @default(cuid())
+  configKey             String    @unique
+  configValue           Json
+  description           String?
+  isPublic              Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("system_config")
+}
+
+// Enums
+enum Role {
+  PARENT
+  TEACHER
+  ADMIN
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+  SCHOOL
+}
+
+enum Rarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
