@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpellBloc Authentication Demo</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .auth-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: #f9f9f9;
+        }
+        .login-btn {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .login-btn:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+        }
+        .child-profile {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            display: none;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+        .game-access {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .wallet-info {
+            background: #e2e3e5;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 SpellBloc Authentication Demo</h1>
+        <p>This demo shows how authentication works in the SpellBloc platform</p>
+
+        <!-- Parent Authentication -->
+        <div class="auth-section">
+            <h2>👨‍👩‍👧‍👦 Parent/Teacher Login</h2>
+            <p>Parents and teachers use familiar Web2 authentication:</p>
+            
+            <button class="login-btn" onclick="simulateGoogleLogin()">
+                🔐 Login with Google
+            </button>
+            <button class="login-btn" onclick="simulateEmailLogin()">
+                📧 Login with Email
+            </button>
+
+            <div id="parent-status" class="status info" style="display: none;">
+                Not logged in
+            </div>
+        </div>
+
+        <!-- Child Profile Management -->
+        <div class="auth-section">
+            <h2>👶 Child Profile Management</h2>
+            <p>Children don't create accounts - parents manage their profiles:</p>
+            
+            <div id="child-profiles"></div>
+            
+            <button class="login-btn" onclick="createChildProfile()" style="display: none;" id="create-child-btn">
+                ➕ Add Child Profile
+            </button>
+        </div>
+
+        <!-- Game Access -->
+        <div class="game-access" id="game-access">
+            <h2>🎮 Game Access</h2>
+            <p>Child can now play games with blockchain-verified achievements:</p>
+            <button class="login-btn" onclick="startGame()">Start Spelling Game</button>
+            <div id="game-status"></div>
+        </div>
+
+        <!-- Backend Blockchain (Hidden from Users) -->
+        <div class="auth-section">
+            <h2>🔗 Backend Blockchain (Hidden from Users)</h2>
+            <p>Web3 infrastructure works behind the scenes:</p>
+            <div id="blockchain-status" class="wallet-info">
+                Blockchain services offline - login to activate
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let childProfiles = [];
+        let activeChild = null;
+
+        // Simulate Google OAuth login
+        function simulateGoogleLogin() {
+            setTimeout(() => {
+                currentUser = {
+                    id: 'user_123',
+                    name: 'Sarah Johnson',
+                    email: 'sarah.johnson@gmail.com',
+                    provider: 'google',
+                    role: 'parent'
+                };
+                updateAuthStatus();
+                createCustodialWallets();
+            }, 1000);
+            
+            document.getElementById('parent-status').style.display = 'block';
+            document.getElementById('parent-status').textContent = 'Authenticating with Google...';
+            document.getElementById('parent-status').className = 'status warning';
+        }
+
+        // Simulate email login
+        function simulateEmailLogin() {
+            setTimeout(() => {
+                currentUser = {
+                    id: 'user_456',
+                    name: 'Mike Teacher',
+                    email: 'mike@school.edu',
+                    provider: 'email',
+                    role: 'teacher'
+                };
+                updateAuthStatus();
+                createCustodialWallets();
+            }, 1000);
+            
+            document.getElementById('parent-status').style.display = 'block';
+            document.getElementById('parent-status').textContent = 'Authenticating with email...';
+            document.getElementById('parent-status').className = 'status warning';
+        }
+
+        // Update authentication status
+        function updateAuthStatus() {
+            const statusEl = document.getElementById('parent-status');
+            statusEl.style.display = 'block';
+            statusEl.className = 'status success';
+            statusEl.textContent = `✅ Logged in as ${currentUser.name} (${currentUser.role})`;
+            
+            document.getElementById('create-child-btn').style.display = 'inline-block';
+            
+            // Auto-create sample child profiles
+            if (currentUser.role === 'parent') {
+                setTimeout(() => {
+                    createChildProfile('Emma', 5);
+                    createChildProfile('Lucas', 7);
+                }, 500);
+            }
+        }
+
+        // Create child profile (COPPA compliant)
+        function createChildProfile(name = null, age = null) {
+            const childName = name || prompt('Child name:') || 'Child';
+            const childAge = age || parseInt(prompt('Child age (2-7):')) || 5;
+            
+            const child = {
+                id: `child_${Date.now()}`,
+                name: childName,
+                age: childAge,
+                parentId: currentUser.id,
+                walletAddress: generateWalletAddress(),
+                createdAt: new Date().toISOString()
+            };
+            
+            childProfiles.push(child);
+            renderChildProfiles();
+            
+            // Create custodial wallet for child (backend only)
+            createChildWallet(child);
+        }
+
+        // Render child profiles
+        function renderChildProfiles() {
+            const container = document.getElementById('child-profiles');
+            container.innerHTML = '';
+            
+            childProfiles.forEach(child => {
+                const profileDiv = document.createElement('div');
+                profileDiv.className = 'child-profile';
+                profileDiv.style.display = 'block';
+                profileDiv.innerHTML = `
+                    <h4>👶 ${child.name} (Age ${child.age})</h4>
+                    <p><strong>Profile ID:</strong> ${child.id}</p>
+                    <p><strong>Custodial Wallet:</strong> ${child.walletAddress}</p>
+                    <p><em>Child never sees wallet address or crypto terms</em></p>
+                    <button class="login-btn" onclick="selectChild('${child.id}')">
+                        🎮 Let ${child.name} Play
+                    </button>
+                `;
+                container.appendChild(profileDiv);
+            });
+        }
+
+        // Select child for game access
+        function selectChild(childId) {
+            activeChild = childProfiles.find(c => c.id === childId);
+            document.getElementById('game-access').style.display = 'block';
+            
+            const gameStatus = document.getElementById('game-status');
+            gameStatus.innerHTML = `
+                <div class="status success">
+                    🎮 ${activeChild.name} is ready to play!<br>
+                    <small>Blockchain wallet: ${activeChild.walletAddress} (hidden from child)</small>
+                </div>
+            `;
+        }
+
+        // Start game (child experience)
+        function startGame() {
+            if (!activeChild) return;
+            
+            const gameStatus = document.getElementById('game-status');
+            gameStatus.innerHTML = `
+                <div class="status info">
+                    🎯 Game started for ${activeChild.name}!<br>
+                    <small>• Child sees: Fun spelling game with badges</small><br>
+                    <small>• Backend: NFT achievements being minted to wallet</small><br>
+                    <small>• Parent dashboard: Real-time progress tracking</small>
+                </div>
+            `;
+            
+            // Simulate blockchain activity
+            setTimeout(() => {
+                mintAchievementNFT();
+            }, 2000);
+        }
+
+        // Create custodial wallets (backend only)
+        function createCustodialWallets() {
+            const blockchainStatus = document.getElementById('blockchain-status');
+            blockchainStatus.innerHTML = `
+                🔗 Blockchain Services Active
+                • Celo Network: Connected
+                • Smart Contracts: Deployed
+                • Custodial Wallet Service: Running
+                • IPFS Storage: Available
+                
+                Authentication Flow:
+                1. ✅ User authenticated via NextAuth.js
+                2. ✅ JWT token generated
+                3. ✅ Database session created
+                4. ✅ Blockchain service initialized
+            `;
+        }
+
+        // Create child wallet (invisible to users)
+        function createChildWallet(child) {
+            setTimeout(() => {
+                const blockchainStatus = document.getElementById('blockchain-status');
+                blockchainStatus.innerHTML += `
+                
+                Child Wallet Created:
+                • Child: ${child.name}
+                • Wallet: ${child.walletAddress}
+                • Private Key: [ENCRYPTED_IN_DATABASE]
+                • Child Experience: No crypto terms shown
+                `;
+            }, 1000);
+        }
+
+        // Mint achievement NFT (backend process)
+        function mintAchievementNFT() {
+            const gameStatus = document.getElementById('game-status');
+            gameStatus.innerHTML += `
+                <div class="status success">
+                    🏆 Achievement Unlocked!<br>
+                    <small>• Child sees: "Great job! You earned a spelling badge!"</small><br>
+                    <small>• Blockchain: NFT minted to custodial wallet</small><br>
+                    <small>• Certificate: Verifiable on-chain achievement</small>
+                </div>
+            `;
+            
+            // Update blockchain status
+            const blockchainStatus = document.getElementById('blockchain-status');
+            blockchainStatus.innerHTML += `
+            
+            NFT Achievement Minted:
+            • Contract: SpellBlocAchievements
+            • Token ID: #${Math.floor(Math.random() * 1000)}
+            • Recipient: ${activeChild.walletAddress}
+            • Metadata: IPFS hash stored
+            • Verifiable: ✅ On-chain proof
+            `;
+        }
+
+        // Generate mock wallet address
+        function generateWalletAddress() {
+            return '0x' + Math.random().toString(16).substr(2, 40);
+        }
+    </script>
+</body>
+</html>
