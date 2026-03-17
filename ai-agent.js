@@ -71,6 +71,207 @@ class SpellBlocAI {
         return analysis;
     }
 
+    // EMOTIONAL STATE ASSESSMENT
+    assessEmotionalState(attempts) {
+        if (attempts.length === 0) return 'neutral';
+        
+        const recentAttempts = attempts.slice(-5); // Last 5 attempts
+        const accuracy = this.calculateAccuracy(recentAttempts);
+        const avgTime = this.calculateAverageTime(recentAttempts);
+        const consecutiveFailures = this.getConsecutiveFailures(recentAttempts);
+        
+        // Determine emotional state based on performance patterns
+        if (consecutiveFailures >= 3) return 'frustrated';
+        if (accuracy >= 80 && avgTime < 10) return 'confident';
+        if (accuracy >= 90) return 'excited';
+        if (accuracy < 50) return 'struggling';
+        if (avgTime > 20) return 'thoughtful';
+        
+        return 'engaged';
+    }
+
+    // LEARNING VELOCITY CALCULATION
+    calculateLearningVelocity(attempts) {
+        if (attempts.length < 10) return 'establishing';
+        
+        const firstHalf = attempts.slice(0, Math.floor(attempts.length / 2));
+        const secondHalf = attempts.slice(Math.floor(attempts.length / 2));
+        
+        const firstAccuracy = this.calculateAccuracy(firstHalf);
+        const secondAccuracy = this.calculateAccuracy(secondHalf);
+        
+        const improvement = secondAccuracy - firstAccuracy;
+        
+        if (improvement > 20) return 'accelerating';
+        if (improvement > 10) return 'improving';
+        if (improvement > -5) return 'steady';
+        
+        return 'declining';
+    }
+
+    // GET CONSECUTIVE FAILURES
+    getConsecutiveFailures(attempts) {
+        let consecutive = 0;
+        for (let i = attempts.length - 1; i >= 0; i--) {
+            if (!attempts[i].correct) {
+                consecutive++;
+            } else {
+                break;
+            }
+        }
+        return consecutive;
+    }
+
+    // LEARNING STYLE DETECTION
+    identifyLearningStyle(childData) {
+        const patterns = this.identifyLearningPattern(childData);
+        
+        if (patterns.visualLearner > 0.7) return 'Visual Learner';
+        if (patterns.auditoryLearner > 0.7) return 'Auditory Learner';
+        if (patterns.kinestheticLearner > 0.7) return 'Kinesthetic Learner';
+        
+        return 'Multimodal Learner';
+    }
+
+    // DETECT LEARNING PATTERNS
+    detectVisualLearning(childData) {
+        // Higher accuracy with emoji-based categories suggests visual learning
+        const visualCategories = ['animals', 'colors', 'fruits', 'objects'];
+        const visualAttempts = childData.attempts.filter(a => visualCategories.includes(a.category));
+        return this.calculateAccuracy(visualAttempts) / 100;
+    }
+
+    detectAuditoryLearning(childData) {
+        // Better performance with sound-based categories
+        const auditoryCategories = ['vowels', 'consonants', 'vowel_words', 'consonant_words'];
+        const auditoryAttempts = childData.attempts.filter(a => auditoryCategories.includes(a.category));
+        return this.calculateAccuracy(auditoryAttempts) / 100;
+    }
+
+    detectKinestheticLearning(childData) {
+        // Faster completion times suggest kinesthetic preference
+        const avgTime = this.calculateAverageTime(childData.attempts);
+        return avgTime < 10 ? 0.8 : 0.3; // Quick responses suggest kinesthetic
+    }
+
+    detectLearningSpeed(childData) {
+        const velocity = this.calculateLearningVelocity(childData.attempts);
+        return velocity === 'accelerating' || velocity === 'improving';
+    }
+
+    detectRepetitionNeeds(childData) {
+        const strugglingAreas = this.identifyStrugglingAreas(childData.attempts);
+        return strugglingAreas.length > 2; // Needs repetition if struggling in multiple areas
+    }
+
+    // PRONUNCIATION SIMILARITY
+    calculatePronunciationSimilarity(spoken, expected) {
+        // Simple similarity calculation (can be enhanced with phonetic algorithms)
+        const spokenClean = spoken.toLowerCase().replace(/[^a-z]/g, '');
+        const expectedClean = expected.toLowerCase().replace(/[^a-z]/g, '');
+        
+        if (spokenClean === expectedClean) return 1.0;
+        
+        // Calculate Levenshtein distance
+        const distance = this.levenshteinDistance(spokenClean, expectedClean);
+        const maxLength = Math.max(spokenClean.length, expectedClean.length);
+        
+        return Math.max(0, 1 - (distance / maxLength));
+    }
+
+    // LEVENSHTEIN DISTANCE
+    levenshteinDistance(str1, str2) {
+        const matrix = [];
+        
+        for (let i = 0; i <= str2.length; i++) {
+            matrix[i] = [i];
+        }
+        
+        for (let j = 0; j <= str1.length; j++) {
+            matrix[0][j] = j;
+        }
+        
+        for (let i = 1; i <= str2.length; i++) {
+            for (let j = 1; j <= str1.length; j++) {
+                if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
+                    );
+                }
+            }
+        }
+        
+        return matrix[str2.length][str1.length];
+    }
+
+    // PRONUNCIATION FEEDBACK
+    generatePronunciationFeedback(similarity) {
+        if (similarity >= 0.9) return '🎉 Perfect pronunciation!';
+        if (similarity >= 0.7) return '👍 Great job! Almost perfect!';
+        if (similarity >= 0.5) return '😊 Good try! Let\'s practice more.';
+        return '🤗 Keep practicing! You\'re learning!';
+    }
+
+    // RECOMMENDED FOCUS
+    getRecommendedFocus(analysis) {
+        if (analysis.strugglingAreas.length > 0) {
+            return `Focus on ${analysis.strugglingAreas[0]} to improve overall performance`;
+        }
+        if (analysis.accuracy > 90) {
+            return 'Ready for more challenging words!';
+        }
+        return 'Continue building spelling confidence';
+    }
+
+    // GENERATE RECOMMENDATIONS
+    generateRecommendations(analysis) {
+        const recommendations = [];
+        
+        if (analysis.accuracy < 70) {
+            recommendations.push('Practice with easier words to build confidence');
+        }
+        
+        if (analysis.averageTime > 20) {
+            recommendations.push('Take time to sound out words - no rush!');
+        }
+        
+        if (analysis.strugglingAreas.length > 0) {
+            recommendations.push(`Extra practice needed in: ${analysis.strugglingAreas.join(', ')}`);
+        }
+        
+        if (analysis.emotionalState === 'frustrated') {
+            recommendations.push('Take breaks and celebrate small wins');
+        }
+        
+        if (recommendations.length === 0) {
+            recommendations.push('Great progress! Keep up the excellent work!');
+        }
+        
+        return recommendations;
+    }
+
+    // PREDICT NEXT MILESTONE
+    predictNextMilestone(childData) {
+        const accuracy = this.calculateAccuracy(childData.attempts);
+        const totalWords = childData.attempts.length;
+        
+        if (accuracy >= 90 && totalWords >= 50) {
+            return 'Ready for next age level!';
+        }
+        if (accuracy >= 80) {
+            return `${100 - totalWords} more words to master this level`;
+        }
+        if (accuracy >= 70) {
+            return 'Building strong spelling foundation';
+        }
+        
+        return 'Focus on current level mastery';
+    }
+
     // PERSONALIZED ENCOURAGEMENT
     generateEncouragement(attempt, childPersonality) {
         const encouragements = {
