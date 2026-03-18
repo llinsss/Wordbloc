@@ -206,23 +206,125 @@ class StoryMode {
         this.description = 'Spell words to unlock story chapters';
         this.currentChapter = 1;
         this.storyProgress = 0;
+        this.stories = {
+            animals: {
+                title: "The Magical Forest Adventure",
+                chapters: [
+                    "Once upon a time, you entered a magical forest...",
+                    "A friendly {word} appeared on the path ahead...",
+                    "The {word} led you deeper into the enchanted woods...",
+                    "Suddenly, a wise {word} offered to guide you...",
+                    "Together, you discovered a hidden treasure!"
+                ]
+            },
+            colors: {
+                title: "The Rainbow Quest",
+                chapters: [
+                    "The world has lost all its colors! You must help...",
+                    "You found a magical {word} crystal...",
+                    "The {word} light began to spread across the land...",
+                    "More {word} appeared, bringing joy to everyone...",
+                    "You saved the world with the power of colors!"
+                ]
+            },
+            objects: {
+                title: "The Inventor's Workshop",
+                chapters: [
+                    "Welcome to the amazing inventor's workshop...",
+                    "You need to find a special {word} to fix the machine...",
+                    "The {word} fits perfectly! The machine starts working...",
+                    "Now you need another {word} to complete the invention...",
+                    "Success! Your invention will help people everywhere!"
+                ]
+            }
+        };
     }
 
     initializeGame(wordData) {
+        this.storyProgress = 0;
+        this.currentChapter = 0;
+        
         // Add story context to words
-        return wordData.map(word => ({
+        return wordData.map((word, index) => ({
             ...word,
-            storyContext: this.getStoryContext(word.word)
+            storyContext: this.getStoryContext(word.word, index),
+            chapterIndex: Math.floor(index / 3) // New chapter every 3 words
         }));
     }
 
-    getStoryContext(word) {
-        const contexts = {
-            cat: "The brave cat explores the magical forest...",
-            dog: "A friendly dog joins your adventure...",
-            bird: "A colorful bird shows you the way..."
+    getStoryContext(word, wordIndex) {
+        const story = this.stories[currentCategory] || this.stories.animals;
+        const chapterIndex = Math.min(Math.floor(wordIndex / 3), story.chapters.length - 1);
+        const chapter = story.chapters[chapterIndex];
+        
+        return {
+            title: story.title,
+            text: chapter.replace('{word}', word),
+            chapter: chapterIndex + 1,
+            progress: Math.min(100, (wordIndex / 15) * 100) // Story completes after 15 words
         };
-        return contexts[word] || `You discover a ${word} on your journey...`;
+    }
+
+    onWordCompleted(wordObj) {
+        this.storyProgress++;
+        
+        // Show story progression
+        const storyElement = document.getElementById('storyContext');
+        if (storyElement && wordObj.storyContext) {
+            storyElement.innerHTML = `
+                <div class="story-header">
+                    <h4>${wordObj.storyContext.title}</h4>
+                    <div class="story-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${wordObj.storyContext.progress}%"></div>
+                        </div>
+                        <span>Chapter ${wordObj.storyContext.chapter}</span>
+                    </div>
+                </div>
+                <p class="story-text">${wordObj.storyContext.text}</p>
+            `;
+            
+            // Animate story appearance
+            storyElement.style.animation = 'fadeIn 0.5s ease';
+        }
+        
+        // Check if story is complete
+        if (this.storyProgress >= 15) {
+            this.showStoryComplete();
+        }
+    }
+
+    showStoryComplete() {
+        const modal = document.createElement('div');
+        modal.className = 'story-complete-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>🎆 Story Complete!</h2>
+                <p>Congratulations! You've finished the adventure and learned ${this.storyProgress} new words!</p>
+                <div class="story-celebration">
+                    <div class="celebration-emoji">🏆</div>
+                    <p>You are now a Spelling Hero!</p>
+                </div>
+                <div class="modal-buttons">
+                    <button class="new-story-btn">New Adventure</button>
+                    <button class="home-btn">Home</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.querySelector('.new-story-btn').addEventListener('click', () => {
+            modal.remove();
+            this.storyProgress = 0;
+            currentWordIndex = 0;
+            loadWord();
+        });
+        
+        modal.querySelector('.home-btn').addEventListener('click', () => {
+            modal.remove();
+            showScreen('home');
+        });
     }
 }
 
@@ -232,10 +334,13 @@ class TimedMode {
         this.description = 'Race against time!';
         this.timeLimit = 30; // seconds
         this.timeRemaining = 30;
+        this.wordsCompleted = 0;
+        this.timer = null;
     }
 
     initializeGame(wordData) {
         this.timeRemaining = this.timeLimit;
+        this.wordsCompleted = 0;
         this.startTimer();
         return wordData;
     }
@@ -254,12 +359,81 @@ class TimedMode {
         const timerElement = document.getElementById('timer');
         if (timerElement) {
             timerElement.textContent = `⏰ ${this.timeRemaining}s`;
+            
+            // Change color based on time remaining
+            if (this.timeRemaining <= 10) {
+                timerElement.style.color = '#ef4444'; // Red
+                timerElement.style.animation = 'pulse 1s infinite';
+            } else if (this.timeRemaining <= 20) {
+                timerElement.style.color = '#f59e0b'; // Orange
+            } else {
+                timerElement.style.color = '#10b981'; // Green
+            }
         }
     }
 
     endGame() {
         clearInterval(this.timer);
-        // Trigger game end
+        this.showTimedResults();
+    }
+
+    showTimedResults() {
+        const modal = document.createElement('div');
+        modal.className = 'timed-results-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>⏰ Time's Up!</h2>
+                <div class="results">
+                    <div class="result-stat">
+                        <div class="value">${this.wordsCompleted}</div>
+                        <div class="label">Words Completed</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="value">${Math.round(this.wordsCompleted / this.timeLimit * 60)}</div>
+                        <div class="label">Words Per Minute</div>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="play-again-btn">Play Again</button>
+                    <button class="home-btn">Home</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.querySelector('.play-again-btn').addEventListener('click', () => {
+            modal.remove();
+            this.initializeGame(wordData[currentCategory]);
+            currentWordIndex = 0;
+            loadWord();
+        });
+        
+        modal.querySelector('.home-btn').addEventListener('click', () => {
+            modal.remove();
+            showScreen('home');
+        });
+    }
+
+    onWordCompleted() {
+        this.wordsCompleted++;
+        
+        // Bonus time for correct answers
+        this.timeRemaining += 2;
+        
+        // Show quick feedback
+        const feedback = document.getElementById('feedback');
+        if (feedback) {
+            feedback.textContent = `🚀 +2 seconds! (${this.wordsCompleted} words)`;
+            feedback.className = 'feedback correct';
+        }
+    }
+
+    cleanup() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
     }
 }
 
@@ -1450,6 +1624,12 @@ function setupAdvancedFeatures() {
     multiLanguage.setLanguage(savedLanguage);
     document.getElementById('languageSelect').value = savedLanguage;
     
+    // Load saved game mode
+    const savedGameMode = localStorage.getItem('spellbloc_gameMode') || 'classic';
+    gameModeManager.setMode(savedGameMode);
+    document.getElementById('modeSelect').value = savedGameMode;
+    console.log(`🎮 Loaded game mode: ${savedGameMode}`);
+    
     // Load subscription status
     updateSubscriptionDisplay();
     
@@ -1522,6 +1702,14 @@ function setupEventListeners() {
         localStorage.setItem('spellbloc_age', currentAge);
         wordData = curriculum[`age${currentAge}`].categories;
         updateAgeDisplay();
+    });
+
+    // Game Mode selection
+    document.getElementById('modeSelect').addEventListener('change', (e) => {
+        const selectedMode = e.target.value;
+        gameModeManager.setMode(selectedMode);
+        localStorage.setItem('spellbloc_gameMode', selectedMode);
+        console.log(`🎮 Switched to ${selectedMode} mode`);
     });
 
     // Navigation
@@ -1777,6 +1965,9 @@ function handleCorrectAnswer() {
     const endTime = Date.now();
     const timeToComplete = (endTime - startTime) / 1000;
     
+    // Show brief success indicator
+    showSuccessIndicator();
+    
     feedback.textContent = multiLanguage.translate('perfect') || '🎉 Perfect! Great job!';
     feedback.className = 'feedback correct';
     
@@ -1790,6 +1981,16 @@ function handleCorrectAnswer() {
     const difficultyElement = document.getElementById('difficultyLevel');
     if (difficultyElement) {
         difficultyElement.textContent = adaptiveLearning.difficultyLevel.toFixed(1);
+    }
+    
+    // Handle mode-specific logic
+    const currentMode = gameModeManager.getCurrentMode();
+    if (currentMode.name === 'Speed Challenge') {
+        currentMode.onWordCompleted();
+    } else if (currentMode.name === 'Story Adventure') {
+        const words = wordData[currentCategory];
+        const wordObj = words[currentWordIndex];
+        currentMode.onWordCompleted(wordObj);
     }
     
     // Award stars
@@ -2139,12 +2340,8 @@ function loadWord() {
     // Apply difficulty adjustment
     const adjustedWord = applyDifficultyAdjustment(wordObj);
     
-    // Update UI - Fix emoji display
-    wordImage.textContent = adjustedWord.emoji || '❓';
-    wordImage.style.fontSize = 'clamp(4rem, 12vw, 8rem)';
-    wordImage.style.display = 'flex';
-    wordImage.style.alignItems = 'center';
-    wordImage.style.justifyContent = 'center';
+    // Update UI - Enhanced image display with realistic images
+    updateWordImage(adjustedWord);
     
     feedback.textContent = '';
     feedback.className = 'feedback';
@@ -2318,6 +2515,212 @@ setTimeout(() => {
         window.testLetters();
     }
 }, 3000);
+
+// Enhanced Word Image Display with Realistic Images
+function updateWordImage(wordObj) {
+    const word = wordObj.word;
+    const emoji = wordObj.emoji || '❓';
+    
+    // Clear previous content
+    wordImage.innerHTML = '';
+    wordImage.style.display = 'flex';
+    wordImage.style.alignItems = 'center';
+    wordImage.style.justifyContent = 'center';
+    wordImage.style.position = 'relative';
+    wordImage.style.overflow = 'hidden';
+    
+    // Try to load realistic image first
+    const imageUrl = getRealisticImageUrl(word, currentCategory);
+    
+    if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = word;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '15px';
+        img.style.transition = 'all 0.3s ease';
+        
+        // Add loading state
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'image-loading';
+        loadingDiv.textContent = emoji;
+        loadingDiv.style.fontSize = 'clamp(4rem, 12vw, 8rem)';
+        loadingDiv.style.position = 'absolute';
+        loadingDiv.style.top = '50%';
+        loadingDiv.style.left = '50%';
+        loadingDiv.style.transform = 'translate(-50%, -50%)';
+        loadingDiv.style.opacity = '0.5';
+        
+        wordImage.appendChild(loadingDiv);
+        wordImage.appendChild(img);
+        
+        img.onload = () => {
+            loadingDiv.style.opacity = '0';
+            img.style.opacity = '1';
+            setTimeout(() => loadingDiv.remove(), 300);
+        };
+        
+        img.onerror = () => {
+            // Fallback to emoji if image fails to load
+            wordImage.innerHTML = '';
+            wordImage.textContent = emoji;
+            wordImage.style.fontSize = 'clamp(4rem, 12vw, 8rem)';
+        };
+        
+        img.style.opacity = '0';
+        
+    } else {
+        // Use emoji as fallback
+        wordImage.textContent = emoji;
+        wordImage.style.fontSize = 'clamp(4rem, 12vw, 8rem)';
+    }
+}
+
+// Get realistic image URL for words
+function getRealisticImageUrl(word, category) {
+    // Use Unsplash API for high-quality, free images
+    const baseUrl = 'https://source.unsplash.com/400x400/';
+    
+    // Category-specific search terms for better results
+    const searchTerms = {
+        animals: {
+            cat: 'cute+cat+pet',
+            dog: 'friendly+dog+pet',
+            bird: 'colorful+bird',
+            fish: 'tropical+fish',
+            elephant: 'elephant+wildlife',
+            tiger: 'tiger+wildlife',
+            lion: 'lion+wildlife',
+            bear: 'bear+wildlife',
+            rabbit: 'rabbit+bunny',
+            horse: 'horse+animal',
+            cow: 'cow+farm+animal',
+            pig: 'pig+farm+animal',
+            sheep: 'sheep+farm+animal',
+            duck: 'duck+pond',
+            frog: 'frog+nature',
+            butterfly: 'butterfly+colorful',
+            bee: 'bee+flower',
+            spider: 'spider+web',
+            snake: 'snake+nature',
+            turtle: 'turtle+nature'
+        },
+        colors: {
+            red: 'red+color+vibrant',
+            blue: 'blue+color+sky',
+            green: 'green+color+nature',
+            yellow: 'yellow+color+bright',
+            orange: 'orange+color+sunset',
+            purple: 'purple+color+flower',
+            pink: 'pink+color+flower',
+            black: 'black+color+abstract',
+            white: 'white+color+clean',
+            brown: 'brown+color+wood',
+            gray: 'gray+color+stone',
+            gold: 'gold+color+metallic',
+            silver: 'silver+color+metallic'
+        },
+        fruits: {
+            apple: 'red+apple+fresh',
+            banana: 'banana+yellow+fresh',
+            orange: 'orange+fruit+citrus',
+            grape: 'grapes+purple+fresh',
+            strawberry: 'strawberry+red+fresh',
+            lemon: 'lemon+yellow+citrus',
+            pear: 'pear+green+fresh',
+            peach: 'peach+orange+fresh',
+            cherry: 'cherry+red+fresh',
+            pineapple: 'pineapple+tropical',
+            watermelon: 'watermelon+green+red',
+            mango: 'mango+tropical+orange',
+            kiwi: 'kiwi+fruit+green',
+            coconut: 'coconut+tropical+white'
+        },
+        objects: {
+            car: 'car+vehicle+modern',
+            house: 'house+home+cozy',
+            book: 'book+reading+education',
+            ball: 'ball+sports+colorful',
+            chair: 'chair+furniture+modern',
+            table: 'table+furniture+wood',
+            cup: 'cup+coffee+ceramic',
+            phone: 'smartphone+modern+technology',
+            computer: 'laptop+computer+modern',
+            bicycle: 'bicycle+bike+transportation',
+            clock: 'clock+time+wall',
+            lamp: 'lamp+light+modern',
+            door: 'door+entrance+wood',
+            window: 'window+glass+light',
+            bed: 'bed+bedroom+comfortable',
+            toy: 'toy+colorful+children',
+            key: 'key+metal+security',
+            bag: 'bag+leather+fashion',
+            hat: 'hat+fashion+style',
+            shoe: 'shoe+footwear+fashion'
+        }
+    };
+    
+    // Get search term for the word
+    const categoryTerms = searchTerms[category];
+    if (categoryTerms && categoryTerms[word]) {
+        return baseUrl + categoryTerms[word];
+    }
+    
+    // Fallback to simple word search
+    return baseUrl + word.replace(/\s+/g, '+');
+}
+function showSuccessIndicator() {
+    // Remove any existing success indicator
+    const existingIndicator = document.querySelector('.success-indicator');
+    if (existingIndicator) {
+        existingIndicator.remove();
+    }
+    
+    // Create success indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'success-indicator';
+    
+    // Random success messages with good symbols
+    const successMessages = [
+        { emoji: '✓', text: 'Correct!' },
+        { emoji: '★', text: 'Great Job!' },
+        { emoji: '♦', text: 'Perfect!' },
+        { emoji: '♥', text: 'Awesome!' },
+        { emoji: '◆', text: 'Well Done!' },
+        { emoji: '●', text: 'Amazing!' },
+        { emoji: '▲', text: 'Fantastic!' },
+        { emoji: '■', text: 'Brilliant!' }
+    ];
+    
+    const randomMessage = successMessages[Math.floor(Math.random() * successMessages.length)];
+    
+    indicator.innerHTML = `
+        <div class="success-content">
+            <div class="success-emoji">${randomMessage.emoji}</div>
+            <div class="success-text">${randomMessage.text}</div>
+        </div>
+    `;
+    
+    // Position it over the word image
+    const wordImageRect = wordImage.getBoundingClientRect();
+    indicator.style.position = 'fixed';
+    indicator.style.left = wordImageRect.left + (wordImageRect.width / 2) + 'px';
+    indicator.style.top = wordImageRect.top + (wordImageRect.height / 2) + 'px';
+    indicator.style.transform = 'translate(-50%, -50%)';
+    indicator.style.zIndex = '1500';
+    indicator.style.pointerEvents = 'none';
+    
+    document.body.appendChild(indicator);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+        if (indicator.parentNode) {
+            indicator.remove();
+        }
+    }, 1200);
+}
 
 window.checkVoices = function() {
     console.log('🎤 Checking available voices...');
