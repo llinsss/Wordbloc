@@ -1409,6 +1409,17 @@ const playerLevelDisplay = document.getElementById('playerLevel');
 const settingsPanel = document.getElementById('settingsPanel');
 const volumeControl = document.getElementById('volumeControl');
 
+// Safety check for DOM elements
+if (!letterBank) {
+    console.error('letterBank element not found! Make sure the HTML has id="letterBank"');
+}
+if (!dropZone) {
+    console.error('dropZone element not found! Make sure the HTML has id="dropZone"');
+}
+if (!wordImage) {
+    console.error('wordImage element not found! Make sure the HTML has id="wordImage"');
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     updateStats();
@@ -1416,6 +1427,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     setupAdvancedFeatures();
     adaptiveLearning.analytics.startSession();
+    
+    // Debug: Test letter creation
+    console.log('SpellBloc initialized successfully!');
+    console.log('Letter bank element:', letterBank);
+    console.log('Drop zone element:', dropZone);
 });
 
 function setupAdvancedFeatures() {
@@ -1572,6 +1588,9 @@ function startGame() {
     }
     
     showScreen('game');
+    
+    // Load the first word immediately (but keep it hidden behind instructions)
+    loadWord();
 }
 
 function loadWord() {
@@ -1620,6 +1639,13 @@ function createLetterBank() {
     const scrambled = [...letters].sort(() => Math.random() - 0.5);
     
     letterBank.innerHTML = '';
+    letterBank.style.display = 'flex';
+    letterBank.style.flexWrap = 'wrap';
+    letterBank.style.justifyContent = 'center';
+    letterBank.style.gap = 'clamp(5px, 2vw, 10px)';
+    letterBank.style.visibility = 'visible';
+    letterBank.style.opacity = '1';
+    
     scrambled.forEach((letter, index) => {
         const tile = document.createElement('div');
         tile.className = 'letter-tile';
@@ -1627,10 +1653,25 @@ function createLetterBank() {
         tile.dataset.letter = letter;
         tile.dataset.id = index;
         
+        // Ensure proper styling and visibility
+        tile.style.display = 'flex';
+        tile.style.alignItems = 'center';
+        tile.style.justifyContent = 'center';
+        tile.style.fontSize = 'clamp(1.3rem, 4vw, 2rem)';
+        tile.style.fontWeight = 'bold';
+        tile.style.cursor = 'pointer';
+        tile.style.userSelect = 'none';
+        tile.style.visibility = 'visible';
+        tile.style.opacity = '1';
+        tile.style.pointerEvents = 'auto';
+        
         tile.addEventListener('click', () => handleLetterClick(tile));
         
         letterBank.appendChild(tile);
     });
+    
+    // Debug: Log to console to verify letters are created
+    console.log(`Created ${scrambled.length} letter tiles for word: ${currentWord}`);
 }
 
 function handleLetterClick(tile) {
@@ -2098,8 +2139,13 @@ function loadWord() {
     // Apply difficulty adjustment
     const adjustedWord = applyDifficultyAdjustment(wordObj);
     
-    // Update UI
-    wordImage.textContent = adjustedWord.emoji;
+    // Update UI - Fix emoji display
+    wordImage.textContent = adjustedWord.emoji || '❓';
+    wordImage.style.fontSize = 'clamp(4rem, 12vw, 8rem)';
+    wordImage.style.display = 'flex';
+    wordImage.style.alignItems = 'center';
+    wordImage.style.justifyContent = 'center';
+    
     feedback.textContent = '';
     feedback.className = 'feedback';
     
@@ -2121,7 +2167,10 @@ function loadWord() {
             phonicsElement.classList.remove('hidden');
         }
     } else {
-        document.getElementById('phonicsDisplay').classList.add('hidden');
+        const phonicsElement = document.getElementById('phonicsDisplay');
+        if (phonicsElement) {
+            phonicsElement.classList.add('hidden');
+        }
     }
     
     // Update progress
@@ -2145,7 +2194,11 @@ function loadWord() {
         if (currentCategory === 'vowels' || currentCategory === 'consonants') {
             speakLetterSound(wordObj);
         } else {
-            multiLanguage.speakInLanguage(currentWord);
+            if (typeof multiLanguage !== 'undefined' && multiLanguage.speakInLanguage) {
+                multiLanguage.speakInLanguage(currentWord);
+            } else {
+                speakWord(currentWord);
+            }
         }
     }, 500);
 }
@@ -2224,6 +2277,47 @@ window.testLanguages = function() {
     console.log('🌍 Testing all languages...');
     multiLanguage.testAllLanguages();
 };
+
+// Debug function to test letter creation
+window.testLetters = function() {
+    console.log('🔧 Testing letter creation...');
+    
+    if (!letterBank) {
+        console.error('❌ letterBank element not found!');
+        return;
+    }
+    
+    // Force create letters for testing
+    currentWord = 'cat';
+    currentCategory = 'animals';
+    
+    console.log('📝 Creating letters for word:', currentWord);
+    createLetterBank();
+    
+    console.log('📊 Letter bank children count:', letterBank.children.length);
+    console.log('👀 Letter bank visibility:', letterBank.style.visibility);
+    console.log('💫 Letter bank display:', letterBank.style.display);
+    
+    // Also create drop zone
+    if (dropZone) {
+        dropZone.innerHTML = '';
+        for (let i = 0; i < currentWord.length; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'letter-slot';
+            slot.dataset.index = i;
+            dropZone.appendChild(slot);
+        }
+        console.log('🎯 Drop zone slots created:', dropZone.children.length);
+    }
+};
+
+// Auto-test on load
+setTimeout(() => {
+    console.log('🚀 Auto-testing letters in 3 seconds...');
+    if (typeof window.testLetters === 'function') {
+        window.testLetters();
+    }
+}, 3000);
 
 window.checkVoices = function() {
     console.log('🎤 Checking available voices...');
@@ -2343,7 +2437,10 @@ function getInstructionsForCategory(category) {
 function hideGameInstructions() {
     const instructionsPanel = document.getElementById('gameInstructions');
     instructionsPanel.classList.add('hidden');
-    loadWord(); // Start the actual game
+    // Word is already loaded, just make sure everything is visible
+    if (letterBank.children.length === 0) {
+        loadWord(); // Fallback in case word wasn't loaded
+    }
 }
 
 function updateCurrentTask() {
