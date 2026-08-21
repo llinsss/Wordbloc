@@ -11,6 +11,8 @@
     "verify:celo": "hardhat verify --network celo",
     "node": "hardhat node",
     "clean": "hardhat clean",
+    "check": "node scripts/check-contribution.js",
+    "check:repo": "node scripts/check-repository.js",
     "start": "node server.js"
   },
   "keywords": [

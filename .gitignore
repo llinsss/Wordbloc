@@ -18,6 +18,13 @@ pids
 # Coverage directory used by tools like istanbul
 coverage/
 
+# Hardhat generated output
+artifacts/
+cache/
+
+# Local runtime data
+users.json
+
 # OS generated files
 .DS_Store
 .DS_Store?
